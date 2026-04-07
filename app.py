@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from flask_session import Session
 from functools import wraps
 import os
 import models.usuarios as usuarios_model
@@ -11,9 +10,6 @@ import models.salas as salas_model
 
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'cineworld-local-secret-2025')
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_PERMANENT'] = False
-Session(app)
 
 # ─── HEADERS NO-CACHE ───────────────────────────────────────────────
 @app.after_request
