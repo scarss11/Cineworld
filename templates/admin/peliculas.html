@@ -87,7 +87,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
-    <form method="POST" id="formCreate">
+    <form method="POST">
       <input type="hidden" name="action" value="create">
       <div class="modal-body">
         <div class="form-group"><label class="form-label">Título *</label><input type="text" name="titulo" class="form-control" required></div>
@@ -97,21 +97,17 @@
         </div>
         <div class="form-group"><label class="form-label">Duración (min)</label><input type="number" name="duracion" class="form-control"></div>
         <div class="form-group"><label class="form-label">Descripción</label><textarea name="descripcion" class="form-control" rows="3"></textarea></div>
-
-        <!-- Imagen -->
         <div class="form-group">
           <label class="form-label">Imagen del poster</label>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <input type="url" name="imagen_url" id="create_imagen_url" class="form-control" placeholder="https://... o sube una imagen" style="flex:1;min-width:0;">
-            <button type="button" class="btn btn-ghost btn-sm" onclick="subirImagen('create_imagen_url','create_preview')" style="flex-shrink:0;white-space:nowrap;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
-              Subir imagen
-            </button>
+          <input type="hidden" name="imagen_url" id="create_imagen_url">
+          <div id="create_dropzone" class="dropzone" onclick="triggerUpload('create')">
+            <div class="dropzone-content" id="create_dropzone_content">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="opacity:0.4;margin-bottom:8px;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+              <div style="font-size:14px;font-weight:600;color:var(--text-secondary);">Click para subir imagen</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">JPG, PNG, WEBP — máx 5MB</div>
+            </div>
           </div>
-          <div id="create_preview" style="margin-top:10px;display:none;">
-            <img src="" style="width:60px;height:85px;object-fit:cover;border-radius:8px;border:2px solid var(--green);">
-            <span style="font-size:12px;color:var(--green);margin-left:8px;">✓ Imagen subida</span>
-          </div>
+          <input type="file" id="create_file_input" accept="image/*" style="display:none" onchange="uploadImagen(this,'create')">
         </div>
       </div>
       <div class="modal-footer">
@@ -142,21 +138,17 @@
         </div>
         <div class="form-group"><label class="form-label">Duración (min)</label><input type="number" name="duracion" class="form-control"></div>
         <div class="form-group"><label class="form-label">Descripción</label><textarea name="descripcion" class="form-control" rows="3"></textarea></div>
-
-        <!-- Imagen -->
         <div class="form-group">
           <label class="form-label">Imagen del poster</label>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-            <input type="url" name="imagen_url" id="edit_imagen_url" class="form-control" placeholder="https://... o sube una imagen" style="flex:1;min-width:0;">
-            <button type="button" class="btn btn-ghost btn-sm" onclick="subirImagen('edit_imagen_url','edit_preview')" style="flex-shrink:0;white-space:nowrap;">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
-              Subir imagen
-            </button>
+          <input type="hidden" name="imagen_url" id="edit_imagen_url">
+          <div id="edit_dropzone" class="dropzone" onclick="triggerUpload('edit')">
+            <div class="dropzone-content" id="edit_dropzone_content">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="opacity:0.4;margin-bottom:8px;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+              <div style="font-size:14px;font-weight:600;color:var(--text-secondary);">Click para cambiar imagen</div>
+              <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">JPG, PNG, WEBP — máx 5MB</div>
+            </div>
           </div>
-          <div id="edit_preview" style="margin-top:10px;display:none;">
-            <img src="" style="width:60px;height:85px;object-fit:cover;border-radius:8px;border:2px solid var(--green);">
-            <span style="font-size:12px;color:var(--green);margin-left:8px;">✓ Imagen subida</span>
-          </div>
+          <input type="file" id="edit_file_input" accept="image/*" style="display:none" onchange="uploadImagen(this,'edit')">
         </div>
       </div>
       <div class="modal-footer">
@@ -170,75 +162,110 @@
 
 {% block scripts %}
 <script>
-  // ── CONFIGURACIÓN CLOUDINARY ─────────────────────────────────────
-  // 1. Crea cuenta gratis en cloudinary.com
-  // 2. Ve a Settings → Upload → Add upload preset → Unsigned → copia el nombre
-  // 3. Reemplaza los valores de abajo con los tuyos
-  const CLOUDINARY_CLOUD_NAME = 'TU_CLOUD_NAME';   // ej: dxyz123ab
-  const CLOUDINARY_UPLOAD_PRESET = 'TU_PRESET';     // ej: cineworld_unsigned
-  // ────────────────────────────────────────────────────────────────
+const SUPABASE_URL = 'https://fumjohbslwwisytifxnz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_v9eUmVbhpPrhpO_tMErrIQ__b8iE4on';
+const BUCKET = 'posters';
 
-  function subirImagen(inputId, previewId) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
+function triggerUpload(prefix) {
+  document.getElementById(prefix + '_file_input').click();
+}
 
-      const urlInput = document.getElementById(inputId);
-      const preview = document.getElementById(previewId);
-      const btn = event.target.closest('button');
+async function uploadImagen(input, prefix) {
+  const file = input.files[0];
+  if (!file) return;
 
-      // Mostrar loading
-      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="animation:spin 1s linear infinite"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg> Subiendo...';
-      btn.disabled = true;
+  const dropzone = document.getElementById(prefix + '_dropzone');
+  const content  = document.getElementById(prefix + '_dropzone_content');
+  const urlInput = document.getElementById(prefix + '_imagen_url');
 
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+  content.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="var(--blue)" style="animation:spin 1s linear infinite">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/>
+      </svg>
+      <span style="font-size:13px;color:var(--blue);font-weight:600;">Subiendo imagen...</span>
+    </div>`;
 
-      try {
-        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
-          method: 'POST',
-          body: formData
-        });
-        const data = await res.json();
+  const fileName = Date.now() + '_' + file.name.replace(/\s+/g, '_');
 
-        if (data.secure_url) {
-          urlInput.value = data.secure_url;
-          preview.style.display = 'flex';
-          preview.style.alignItems = 'center';
-          preview.querySelector('img').src = data.secure_url;
-          btn.innerHTML = '✓ Cambiar';
-        } else {
-          alert('Error al subir imagen. Verifica tu configuración de Cloudinary.');
-          btn.innerHTML = 'Subir imagen';
-        }
-      } catch (err) {
-        alert('Error de conexión al subir imagen.');
-        btn.innerHTML = 'Subir imagen';
-      }
-      btn.disabled = false;
-    };
-    input.click();
-  }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${BUCKET}/${fileName}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': file.type,
+        'x-upsert': 'true'
+      },
+      body: file
+    });
 
-  // Mostrar preview al editar si ya tiene imagen
-  const origOpenEditModal = window.openEditModal;
-  window.openEditModal = function(id, data) {
-    origOpenEditModal(id, data);
-    if (data.imagen_url) {
-      const preview = document.getElementById('edit_preview');
-      preview.style.display = 'flex';
-      preview.style.alignItems = 'center';
-      preview.querySelector('img').src = data.imagen_url;
+    if (res.ok) {
+      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${fileName}`;
+      urlInput.value = publicUrl;
+      content.innerHTML = `
+        <div style="display:flex;align-items:center;gap:12px;">
+          <img src="${publicUrl}" style="width:50px;height:70px;object-fit:cover;border-radius:6px;">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--green);">✓ Imagen subida</div>
+            <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Click para cambiar</div>
+          </div>
+        </div>`;
+      dropzone.style.borderColor = 'var(--green)';
+      dropzone.style.background  = 'rgba(48,209,88,0.05)';
     } else {
-      document.getElementById('edit_preview').style.display = 'none';
+      const err = await res.json();
+      throw new Error(err.error || err.message || 'Error desconocido');
     }
-  };
+  } catch(e) {
+    content.innerHTML = `
+      <div style="color:var(--red);font-size:13px;font-weight:600;text-align:center;">
+        ✗ ${e.message}<br>
+        <span style="font-weight:400;font-size:11px;">Verifica políticas del bucket en Supabase Storage</span>
+      </div>`;
+    dropzone.style.borderColor = 'var(--red)';
+  }
+}
+
+// Al abrir modal editar — mostrar imagen actual
+const _orig = window.openEditModal;
+window.openEditModal = function(id, data) {
+  _orig(id, data);
+  const urlInput = document.getElementById('edit_imagen_url');
+  const content  = document.getElementById('edit_dropzone_content');
+  const dropzone = document.getElementById('edit_dropzone');
+  urlInput.value = data.imagen_url || '';
+  document.getElementById('edit_file_input').value = '';
+
+  if (data.imagen_url) {
+    content.innerHTML = `
+      <div style="display:flex;align-items:center;gap:12px;">
+        <img src="${data.imagen_url}" style="width:50px;height:70px;object-fit:cover;border-radius:6px;">
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--blue);">Imagen actual</div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:2px;">Click para cambiar</div>
+        </div>
+      </div>`;
+    dropzone.style.borderColor = 'var(--blue)';
+    dropzone.style.background  = 'rgba(10,132,255,0.05)';
+  } else {
+    content.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="opacity:0.4;margin-bottom:8px;"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+      <div style="font-size:14px;font-weight:600;color:var(--text-secondary);">Click para subir imagen</div>
+      <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">JPG, PNG, WEBP — máx 5MB</div>`;
+    dropzone.style.borderColor = 'var(--border)';
+    dropzone.style.background  = 'transparent';
+  }
+};
 </script>
 <style>
+.dropzone {
+  border: 2px dashed var(--border); border-radius: 12px;
+  padding: 24px; text-align: center; cursor: pointer;
+  transition: all 0.2s; display: flex;
+  align-items: center; justify-content: center; min-height: 100px;
+}
+.dropzone:hover { border-color: var(--blue); background: rgba(10,132,255,0.04); }
+.dropzone-content { display: flex; flex-direction: column; align-items: center; pointer-events: none; }
 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 </style>
 {% endblock %}
