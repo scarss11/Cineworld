@@ -34,6 +34,10 @@
             <div style="display:flex;align-items:center;gap:10px;">
               {% if p.imagen_url %}
               <img src="{{ p.imagen_url }}" style="width:36px;height:50px;object-fit:cover;border-radius:6px;flex-shrink:0;">
+              {% else %}
+              <div style="width:36px;height:50px;border-radius:6px;background:var(--bg);flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="opacity:0.3"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909"/></svg>
+              </div>
               {% endif %}
               <span style="font-weight:600;">{{ p.titulo }}</span>
             </div>
@@ -83,7 +87,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
       </button>
     </div>
-    <form method="POST">
+    <form method="POST" id="formCreate">
       <input type="hidden" name="action" value="create">
       <div class="modal-body">
         <div class="form-group"><label class="form-label">Título *</label><input type="text" name="titulo" class="form-control" required></div>
@@ -93,7 +97,22 @@
         </div>
         <div class="form-group"><label class="form-label">Duración (min)</label><input type="number" name="duracion" class="form-control"></div>
         <div class="form-group"><label class="form-label">Descripción</label><textarea name="descripcion" class="form-control" rows="3"></textarea></div>
-        <div class="form-group"><label class="form-label">URL Imagen (poster)</label><input type="url" name="imagen_url" class="form-control" placeholder="https://..."></div>
+
+        <!-- Imagen -->
+        <div class="form-group">
+          <label class="form-label">Imagen del poster</label>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input type="url" name="imagen_url" id="create_imagen_url" class="form-control" placeholder="https://... o sube una imagen" style="flex:1;min-width:0;">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="subirImagen('create_imagen_url','create_preview')" style="flex-shrink:0;white-space:nowrap;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+              Subir imagen
+            </button>
+          </div>
+          <div id="create_preview" style="margin-top:10px;display:none;">
+            <img src="" style="width:60px;height:85px;object-fit:cover;border-radius:8px;border:2px solid var(--green);">
+            <span style="font-size:12px;color:var(--green);margin-left:8px;">✓ Imagen subida</span>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-ghost" onclick="closeModal('modalCreate')">Cancelar</button>
@@ -123,7 +142,22 @@
         </div>
         <div class="form-group"><label class="form-label">Duración (min)</label><input type="number" name="duracion" class="form-control"></div>
         <div class="form-group"><label class="form-label">Descripción</label><textarea name="descripcion" class="form-control" rows="3"></textarea></div>
-        <div class="form-group"><label class="form-label">URL Imagen</label><input type="url" name="imagen_url" class="form-control"></div>
+
+        <!-- Imagen -->
+        <div class="form-group">
+          <label class="form-label">Imagen del poster</label>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input type="url" name="imagen_url" id="edit_imagen_url" class="form-control" placeholder="https://... o sube una imagen" style="flex:1;min-width:0;">
+            <button type="button" class="btn btn-ghost btn-sm" onclick="subirImagen('edit_imagen_url','edit_preview')" style="flex-shrink:0;white-space:nowrap;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+              Subir imagen
+            </button>
+          </div>
+          <div id="edit_preview" style="margin-top:10px;display:none;">
+            <img src="" style="width:60px;height:85px;object-fit:cover;border-radius:8px;border:2px solid var(--green);">
+            <span style="font-size:12px;color:var(--green);margin-left:8px;">✓ Imagen subida</span>
+          </div>
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-ghost" onclick="closeModal('modalEdit')">Cancelar</button>
@@ -132,4 +166,79 @@
     </form>
   </div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // ── CONFIGURACIÓN CLOUDINARY ─────────────────────────────────────
+  // 1. Crea cuenta gratis en cloudinary.com
+  // 2. Ve a Settings → Upload → Add upload preset → Unsigned → copia el nombre
+  // 3. Reemplaza los valores de abajo con los tuyos
+  const CLOUDINARY_CLOUD_NAME = 'TU_CLOUD_NAME';   // ej: dxyz123ab
+  const CLOUDINARY_UPLOAD_PRESET = 'TU_PRESET';     // ej: cineworld_unsigned
+  // ────────────────────────────────────────────────────────────────
+
+  function subirImagen(inputId, previewId) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const urlInput = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      const btn = event.target.closest('button');
+
+      // Mostrar loading
+      btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="animation:spin 1s linear infinite"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg> Subiendo...';
+      btn.disabled = true;
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+
+      try {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+
+        if (data.secure_url) {
+          urlInput.value = data.secure_url;
+          preview.style.display = 'flex';
+          preview.style.alignItems = 'center';
+          preview.querySelector('img').src = data.secure_url;
+          btn.innerHTML = '✓ Cambiar';
+        } else {
+          alert('Error al subir imagen. Verifica tu configuración de Cloudinary.');
+          btn.innerHTML = 'Subir imagen';
+        }
+      } catch (err) {
+        alert('Error de conexión al subir imagen.');
+        btn.innerHTML = 'Subir imagen';
+      }
+      btn.disabled = false;
+    };
+    input.click();
+  }
+
+  // Mostrar preview al editar si ya tiene imagen
+  const origOpenEditModal = window.openEditModal;
+  window.openEditModal = function(id, data) {
+    origOpenEditModal(id, data);
+    if (data.imagen_url) {
+      const preview = document.getElementById('edit_preview');
+      preview.style.display = 'flex';
+      preview.style.alignItems = 'center';
+      preview.querySelector('img').src = data.imagen_url;
+    } else {
+      document.getElementById('edit_preview').style.display = 'none';
+    }
+  };
+</script>
+<style>
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
 {% endblock %}
