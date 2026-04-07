@@ -1,0 +1,70 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Admin Dashboard — CineWorld{% endblock %}
+{% block page_title %}Panel de Control{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Dashboard</h1>
+    <p>Resumen de actividad del día</p>
+  </div>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon" style="background:rgba(10,132,255,0.1);">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#0A84FF"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <div class="stat-value">${{ '{:,.0f}'.format(stats.ingresos_hoy or 0) }}</div>
+    <div class="stat-label">Ingresos hoy</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:rgba(48,209,88,0.1);">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#30D158"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+    </div>
+    <div class="stat-value">{{ stats.ventas_hoy or 0 }}</div>
+    <div class="stat-label">Ventas hoy</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:rgba(255,159,10,0.1);">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#FF9F0A"><path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+    </div>
+    <div class="stat-value">{{ stats.tickets_hoy or 0 }}</div>
+    <div class="stat-label">Tickets vendidos hoy</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:rgba(255,59,48,0.1);">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#FF3B30"><path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>
+    </div>
+    <div class="stat-value">{{ stats.total or 0 }}</div>
+    <div class="stat-label">Películas activas</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-top:8px;">
+  <a href="{{ url_for('admin_peliculas') }}" style="text-decoration:none;">
+    <div class="card" style="padding:20px;transition:all .2s;cursor:pointer;" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-weight:700;margin-bottom:4px;">Gestionar Películas</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Agregar, editar y controlar cartelera</div>
+    </div>
+  </a>
+  <a href="{{ url_for('admin_funciones') }}" style="text-decoration:none;">
+    <div class="card" style="padding:20px;transition:all .2s;" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-weight:700;margin-bottom:4px;">Gestionar Funciones</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Programar fechas y horarios</div>
+    </div>
+  </a>
+  <a href="{{ url_for('admin_salas') }}" style="text-decoration:none;">
+    <div class="card" style="padding:20px;transition:all .2s;" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-weight:700;margin-bottom:4px;">Gestionar Salas</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Configurar salas y asientos</div>
+    </div>
+  </a>
+  <a href="{{ url_for('admin_compras') }}" style="text-decoration:none;">
+    <div class="card" style="padding:20px;transition:all .2s;" onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor='var(--border)'">
+      <div style="font-weight:700;margin-bottom:4px;">Ver Compras</div>
+      <div style="font-size:13px;color:var(--text-secondary);">Historial de todas las ventas</div>
+    </div>
+  </a>
+</div>
+{% endblock %}

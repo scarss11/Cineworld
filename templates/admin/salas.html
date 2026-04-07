@@ -1,0 +1,113 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Salas — Admin CineWorld{% endblock %}
+{% block page_title %}Salas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Salas</h1>
+    <p>{{ salas|length }} sala(s) disponibles</p>
+  </div>
+  <button class="btn btn-primary" onclick="openModal('modalCreate')">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+    Nueva sala
+  </button>
+</div>
+
+<div class="card">
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Nombre</th><th>Tipo</th><th>Capacidad</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        {% for s in salas %}
+        <tr>
+          <td style="font-weight:700;">{{ s.nombre }}</td>
+          <td>
+            {% if s.tipo == 'IMAX' %}<span class="badge badge-blue">IMAX</span>
+            {% elif s.tipo == 'VIP' %}<span class="badge badge-green">VIP</span>
+            {% else %}<span class="badge">Estándar</span>{% endif %}
+          </td>
+          <td>{{ s.capacidad }} asientos</td>
+          <td>
+            <button class="btn btn-ghost btn-sm" onclick="openEditModal('modalEdit', {
+              id:'{{ s.id }}',nombre:'{{ s.nombre }}',capacidad:'{{ s.capacidad }}',tipo:'{{ s.tipo }}'
+            })">Editar</button>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-secondary);">No hay salas registradas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Crear -->
+<div class="modal-overlay" id="modalCreate">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nueva Sala</div>
+      <button class="modal-close" onclick="closeModal('modalCreate')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form method="POST">
+      <input type="hidden" name="action" value="create">
+      <div class="modal-body">
+        <div class="form-group"><label class="form-label">Nombre *</label><input type="text" name="nombre" class="form-control" required placeholder="Sala 1"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tipo</label>
+            <select name="tipo" class="form-control">
+              <option value="Estandar">Estándar</option>
+              <option value="VIP">VIP</option>
+              <option value="IMAX">IMAX</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Capacidad *</label><input type="number" name="capacidad" class="form-control" required min="1"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalCreate')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Crear sala</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal-overlay" id="modalEdit">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Editar Sala</div>
+      <button class="modal-close" onclick="closeModal('modalEdit')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form method="POST">
+      <input type="hidden" name="action" value="update">
+      <input type="hidden" name="id">
+      <div class="modal-body">
+        <div class="form-group"><label class="form-label">Nombre *</label><input type="text" name="nombre" class="form-control" required></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Tipo</label>
+            <select name="tipo" class="form-control">
+              <option value="Estandar">Estándar</option>
+              <option value="VIP">VIP</option>
+              <option value="IMAX">IMAX</option>
+            </select>
+          </div>
+          <div class="form-group"><label class="form-label">Capacidad *</label><input type="number" name="capacidad" class="form-control" required min="1"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalEdit')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

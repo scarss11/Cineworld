@@ -1,0 +1,71 @@
+{% extends "base_landing.html" %}
+{% block title %}CineWorld — La mejor experiencia de cine{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Ahora en cartelera</div>
+    <h1>Cine<span>World</span></h1>
+    <p>La experiencia de cine más premium de la ciudad.<br>Reserva tus asientos en segundos.</p>
+    <div class="hero-cta">
+      <a href="{{ url_for('registro') }}" class="btn-hero btn-hero-primary">Comprar Tickets</a>
+      <a href="{{ url_for('cartelera') }}" class="btn-hero btn-hero-ghost">Ver Cartelera</a>
+    </div>
+  </div>
+</section>
+
+<div style="background: var(--bg);">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">En cartelera hoy</div>
+      <h2>Películas disponibles</h2>
+      <p>Elige tu película favorita y reserva ahora</p>
+    </div>
+    <div class="movies-grid">
+      {% for p in peliculas %}
+      <a href="{{ url_for('login') }}" class="movie-card">
+        {% if p.imagen_url %}
+        <img src="{{ p.imagen_url }}" alt="{{ p.titulo }}" class="movie-poster">
+        {% else %}
+        <div class="movie-poster-placeholder">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="white"><path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>
+        </div>
+        {% endif %}
+        <div class="movie-info">
+          <div class="movie-title">{{ p.titulo }}</div>
+          <div class="movie-meta">
+            {% if p.genero %}<span class="badge badge-blue">{{ p.genero }}</span>{% endif %}
+            {% if p.clasificacion %}<span class="badge">{{ p.clasificacion }}</span>{% endif %}
+            {% if p.duracion %}<span class="badge">{{ p.duracion }} min</span>{% endif %}
+          </div>
+        </div>
+      </a>
+      {% else %}
+      <p style="color:var(--text-secondary);grid-column:1/-1;">No hay películas disponibles en este momento.</p>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">Instalaciones</div>
+      <h2>Nuestras salas</h2>
+      <p>Múltiples salas para la mejor experiencia</p>
+    </div>
+    <div class="salas-grid">
+      {% for s in salas %}
+      <div class="sala-card">
+        <div class="sala-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#0A84FF"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+        </div>
+        <div class="sala-name">{{ s.nombre }}</div>
+        <div class="sala-meta">
+          <span>{{ s.tipo }}</span>
+          <span>{{ s.capacidad }} asientos</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

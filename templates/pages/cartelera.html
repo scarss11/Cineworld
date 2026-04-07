@@ -1,0 +1,60 @@
+{% extends "base_landing.html" %}
+{% block title %}Cartelera — CineWorld{% endblock %}
+{% block content %}
+<div style="padding-top: 80px; background: var(--bg); min-height: 100vh;">
+  <div class="section">
+    <div class="section-header" style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div class="section-tag">Hoy en pantalla</div>
+        <h2>Cartelera completa</h2>
+        <p>{{ peliculas|length }} películas disponibles</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;" id="filtros">
+        <button class="filtro-btn active" data-genero="all" onclick="filtrar(this,'all')">Todas</button>
+        {% for g in generos %}
+        <button class="filtro-btn" data-genero="{{ g }}" onclick="filtrar(this,'{{ g }}')">{{ g }}</button>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="movies-grid" id="moviesGrid">
+      {% for p in peliculas %}
+      <a href="{{ url_for('login') }}" class="movie-card" data-genero="{{ p.genero }}">
+        {% if p.imagen_url %}
+        <img src="{{ p.imagen_url }}" alt="{{ p.titulo }}" class="movie-poster">
+        {% else %}
+        <div class="movie-poster-placeholder">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="white"><path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z"/></svg>
+        </div>
+        {% endif %}
+        <div class="movie-info">
+          <div class="movie-title">{{ p.titulo }}</div>
+          {% if p.descripcion %}
+          <p style="font-size:13px;color:var(--text-secondary);margin:6px 0 8px;line-height:1.4;">{{ p.descripcion[:80] }}{% if p.descripcion|length > 80 %}…{% endif %}</p>
+          {% endif %}
+          <div class="movie-meta">
+            {% if p.genero %}<span class="badge badge-blue">{{ p.genero }}</span>{% endif %}
+            {% if p.clasificacion %}<span class="badge">{{ p.clasificacion }}</span>{% endif %}
+            {% if p.duracion %}<span class="badge">{{ p.duracion }} min</span>{% endif %}
+          </div>
+        </div>
+      </a>
+      {% else %}
+      <p style="color:var(--text-secondary);grid-column:1/-1;padding:40px 0;text-align:center;">No hay películas disponibles.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<style>
+.filtro-btn{padding:8px 16px;border-radius:10px;border:1.5px solid var(--border);background:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--text-secondary)}
+.filtro-btn:hover,.filtro-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+</style>
+<script>
+function filtrar(btn, genero) {
+  document.querySelectorAll('.filtro-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.movie-card').forEach(card => {
+    card.style.display = (genero === 'all' || card.dataset.genero === genero) ? 'block' : 'none';
+  });
+}
+</script>
+{% endblock %}

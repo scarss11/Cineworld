@@ -1,0 +1,55 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Historial — CineWorld{% endblock %}
+{% block page_title %}Historial de Compras{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Historial de compras</h1>
+    <p>{{ compras|length }} compra(s) realizadas</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Película</th>
+          <th>Fecha función</th>
+          <th>Hora</th>
+          <th>Sala</th>
+          <th>Tickets</th>
+          <th>Total</th>
+          <th>Estado</th>
+          <th>Fecha compra</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in compras %}
+        <tr>
+          <td style="font-weight:700;color:var(--text-secondary);">#{{ c.id }}</td>
+          <td style="font-weight:600;">{{ c.titulo }}</td>
+          <td>{{ c.fecha }}</td>
+          <td>{{ c.hora }}</td>
+          <td>{{ c.sala_nombre }}</td>
+          <td style="text-align:center;font-weight:700;">{{ c.num_tickets }}</td>
+          <td style="font-weight:700;color:var(--green);">${{ '{:,.0f}'.format(c.total) }}</td>
+          <td>
+            {% if c.estado == 'confirmada' %}
+            <span class="badge badge-green">Confirmada</span>
+            {% else %}
+            <span class="badge badge-red">Cancelada</span>
+            {% endif %}
+          </td>
+          <td style="color:var(--text-secondary);font-size:13px;">{{ c.created_at.strftime('%d/%m/%Y') if c.created_at else '' }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="9" style="text-align:center;padding:40px;color:var(--text-secondary);">No tienes compras registradas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Funciones — Admin CineWorld{% endblock %}
+{% block page_title %}Funciones{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Funciones</h1>
+    <p>{{ funciones|length }} función(es) programadas</p>
+  </div>
+  <button class="btn btn-primary" onclick="openModal('modalCreate')">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+    Nueva función
+  </button>
+</div>
+
+<div class="card">
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Película</th>
+          <th>Sala</th>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Precio</th>
+          <th>Estado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for f in funciones %}
+        <tr>
+          <td style="font-weight:600;">{{ f.titulo }}</td>
+          <td>{{ f.sala_nombre }}</td>
+          <td>{{ f.fecha }}</td>
+          <td style="font-weight:700;color:var(--blue);">{{ f.hora }}</td>
+          <td style="font-weight:700;color:var(--green);">${{ '{:,.0f}'.format(f.precio) }}</td>
+          <td>
+            {% if f.activa %}<span class="badge badge-green">Activa</span>
+            {% else %}<span class="badge badge-red">Inactiva</span>{% endif %}
+          </td>
+          <td>
+            <form method="POST" style="display:inline;">
+              <input type="hidden" name="action" value="toggle">
+              <input type="hidden" name="id" value="{{ f.id }}">
+              <button type="submit" class="btn btn-sm {% if f.activa %}btn-danger{% else %}btn-success{% endif %}">
+                {% if f.activa %}Desactivar{% else %}Activar{% endif %}
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-secondary);">No hay funciones programadas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Crear -->
+<div class="modal-overlay" id="modalCreate">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nueva Función</div>
+      <button class="modal-close" onclick="closeModal('modalCreate')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form method="POST">
+      <input type="hidden" name="action" value="create">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Película *</label>
+          <select name="pelicula_id" class="form-control" required>
+            <option value="">Seleccionar...</option>
+            {% for p in peliculas %}
+            <option value="{{ p.id }}">{{ p.titulo }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Sala *</label>
+          <select name="sala_id" class="form-control" required>
+            <option value="">Seleccionar...</option>
+            {% for s in salas %}
+            <option value="{{ s.id }}">{{ s.nombre }} ({{ s.tipo }}, {{ s.capacidad }} asientos)</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Fecha *</label><input type="date" name="fecha" class="form-control" required></div>
+          <div class="form-group"><label class="form-label">Hora *</label><input type="time" name="hora" class="form-control" required></div>
+        </div>
+        <div class="form-group"><label class="form-label">Precio por ticket *</label><input type="number" name="precio" class="form-control" step="0.01" min="0" required placeholder="18000"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalCreate')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Crear función</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

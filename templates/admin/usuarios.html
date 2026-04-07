@@ -1,0 +1,59 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Usuarios — Admin CineWorld{% endblock %}
+{% block page_title %}Usuarios{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Usuarios</h1>
+    <p>{{ users|length }} usuario(s) registrados</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Usuario</th><th>Documento</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Registro</th><th>Acción</th></tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:34px;height:34px;border-radius:10px;background:{% if u.rol == 'admin' %}var(--blue){% else %}var(--bg){% endif %};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:{% if u.rol == 'admin' %}#fff{% else %}var(--text-secondary){% endif %};flex-shrink:0;">
+                {{ u.nombre[0] }}{{ u.apellido[0] }}
+              </div>
+              <div>
+                <div style="font-weight:600;">{{ u.nombre }} {{ u.apellido }}</div>
+              </div>
+            </div>
+          </td>
+          <td style="font-size:13px;color:var(--text-secondary);">{{ u.documento }}</td>
+          <td style="font-size:13px;">{{ u.correo }}</td>
+          <td>
+            {% if u.rol == 'admin' %}<span class="badge badge-blue">Admin</span>
+            {% else %}<span class="badge">Cliente</span>{% endif %}
+          </td>
+          <td>
+            {% if u.activo %}<span class="badge badge-green">Activo</span>
+            {% else %}<span class="badge badge-red">Inactivo</span>{% endif %}
+          </td>
+          <td style="font-size:13px;color:var(--text-secondary);">{{ u.created_at.strftime('%d/%m/%Y') if u.created_at else '' }}</td>
+          <td>
+            <form method="POST" style="display:inline;">
+              <input type="hidden" name="id" value="{{ u.id }}">
+              <button type="submit" class="btn btn-sm {% if u.activo %}btn-danger{% else %}btn-success{% endif %}">
+                {% if u.activo %}Desactivar{% else %}Activar{% endif %}
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-secondary);">No hay usuarios registrados.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

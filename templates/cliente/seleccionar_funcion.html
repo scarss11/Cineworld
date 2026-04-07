@@ -1,0 +1,52 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Seleccionar Función — {{ pelicula.titulo }}{% endblock %}
+{% block page_title %}Seleccionar Función{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('cliente_dashboard') }}" style="display:inline-flex;align-items:center;gap:6px;color:var(--text-secondary);text-decoration:none;font-size:14px;font-weight:500;margin-bottom:24px;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+  Volver a cartelera
+</a>
+
+<div style="display:flex;gap:24px;margin-bottom:32px;flex-wrap:wrap;">
+  {% if pelicula.imagen_url %}
+  <img src="{{ pelicula.imagen_url }}" alt="{{ pelicula.titulo }}" style="width:160px;border-radius:12px;object-fit:cover;flex-shrink:0;">
+  {% endif %}
+  <div>
+    <h1 style="font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:10px;">{{ pelicula.titulo }}</h1>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+      {% if pelicula.genero %}<span class="badge badge-blue">{{ pelicula.genero }}</span>{% endif %}
+      {% if pelicula.clasificacion %}<span class="badge">{{ pelicula.clasificacion }}</span>{% endif %}
+      {% if pelicula.duracion %}<span class="badge">{{ pelicula.duracion }} min</span>{% endif %}
+    </div>
+    {% if pelicula.descripcion %}<p style="color:var(--text-secondary);max-width:500px;line-height:1.6;font-size:15px;">{{ pelicula.descripcion }}</p>{% endif %}
+  </div>
+</div>
+
+<h2 style="font-size:20px;font-weight:700;margin-bottom:16px;">Funciones disponibles</h2>
+
+{% if funciones %}
+<div class="funciones-grid">
+  {% for f in funciones %}
+  <a href="{{ url_for('seleccionar_asientos', fid=f.id) }}" class="funcion-card">
+    <div class="funcion-time">{{ f.hora.strftime('%H:%M') if f.hora else f.hora }}</div>
+    <div class="funcion-date">
+      {{ f.fecha.strftime('%A %d de %B') if f.fecha else f.fecha }}
+    </div>
+    <div class="funcion-meta">
+      <span class="badge badge-blue">{{ f.sala_nombre }}</span>
+      <span class="badge">{{ f.sala_tipo }}</span>
+    </div>
+    <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:13px;color:var(--text-secondary);">Precio por asiento</span>
+      <span style="font-size:18px;font-weight:800;color:var(--green);">${{ '{:,.0f}'.format(f.precio) }}</span>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+{% else %}
+<div style="text-align:center;padding:60px 0;color:var(--text-secondary);">
+  <p>No hay funciones disponibles para esta película.</p>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base_landing.html" %}
+{% block title %}Salas — CineWorld{% endblock %}
+{% block content %}
+<div style="padding-top: 80px; background: var(--bg); min-height: 100vh;">
+  <div class="section">
+    <div class="section-header">
+      <div class="section-tag">Instalaciones</div>
+      <h2>Nuestras salas</h2>
+      <p>Tecnología y comodidad para la mejor experiencia</p>
+    </div>
+    <div class="salas-grid">
+      {% for s in salas %}
+      <div class="sala-card">
+        <div class="sala-icon">
+          {% if s.tipo == 'IMAX' %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#0A84FF"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+          {% elif s.tipo == 'VIP' %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#0A84FF"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+          {% else %}
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#0A84FF"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+          {% endif %}
+        </div>
+        <div class="sala-name">{{ s.nombre }}</div>
+        <div class="sala-meta">
+          <span>
+            {% if s.tipo == 'IMAX' %}<span class="badge badge-blue">IMAX</span>
+            {% elif s.tipo == 'VIP' %}<span class="badge badge-green">VIP</span>
+            {% else %}<span class="badge">Estándar</span>{% endif %}
+          </span>
+          <span style="display:flex;align-items:center;gap:4px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            {{ s.capacidad }} asientos
+          </span>
+        </div>
+        <div style="margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+          {% if s.tipo == 'IMAX' %}
+          <p style="font-size:13px;color:var(--text-secondary);">Pantalla gigante con sonido Dolby Atmos. La experiencia definitiva.</p>
+          {% elif s.tipo == 'VIP' %}
+          <p style="font-size:13px;color:var(--text-secondary);">Butacas reclinables, servicio personalizado y máximo confort.</p>
+          {% else %}
+          <p style="font-size:13px;color:var(--text-secondary);">Cómoda y equipada con lo último en tecnología de proyección digital.</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

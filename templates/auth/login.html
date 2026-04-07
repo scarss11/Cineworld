@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar Sesión — CineWorld</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--blue:#0A84FF;--green:#30D158;--red:#FF3B30;--bg:#F2F2F7;--surface:#fff;--border:rgba(0,0,0,0.07);--text:#1C1C1E;--subtle:#6E6E73}
+    body{font-family:'Outfit',sans-serif;background:var(--bg);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .auth-container{width:100%;max-width:420px}
+    .auth-brand{text-align:center;margin-bottom:32px}
+    .auth-brand a{font-size:32px;font-weight:900;color:#1C1C1E;text-decoration:none;letter-spacing:-1px}
+    .auth-brand a span{color:var(--blue)}
+    .auth-brand p{color:var(--subtle);margin-top:6px;font-size:15px}
+    .auth-card{background:var(--surface);border-radius:20px;padding:32px;border:1px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,0.08)}
+    .auth-title{font-size:22px;font-weight:800;margin-bottom:24px;letter-spacing:-0.5px}
+    .form-group{margin-bottom:16px}
+    .form-label{display:block;font-size:13px;font-weight:600;margin-bottom:6px;color:var(--subtle)}
+    .form-control{width:100%;padding:12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:15px;font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);outline:none;transition:border-color .2s}
+    .form-control:focus{border-color:var(--blue);background:#fff}
+    .btn-submit{width:100%;padding:14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;transition:all .2s;margin-top:8px}
+    .btn-submit:hover{background:#0070e0;transform:translateY(-1px)}
+    .auth-footer{text-align:center;margin-top:20px;font-size:14px;color:var(--subtle)}
+    .auth-footer a{color:var(--blue);text-decoration:none;font-weight:600}
+    .flash{padding:12px 16px;border-radius:10px;font-size:14px;margin-bottom:16px}
+    .flash-error{background:rgba(255,59,48,.1);border:1px solid rgba(255,59,48,.2);color:var(--red)}
+    .flash-success{background:rgba(48,209,88,.1);border:1px solid rgba(48,209,88,.2);color:var(--green)}
+    .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--subtle);text-decoration:none;font-size:14px;margin-bottom:20px}
+    .back-link:hover{color:var(--text)}
+  </style>
+</head>
+<body>
+<div class="auth-container">
+  <div class="auth-brand">
+    <a href="/">Cine<span>World</span></a>
+    <p>Tu cine favorito</p>
+  </div>
+  {% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for cat, msg in messages %}
+    <div class="flash flash-{{ cat }}">{{ msg }}</div>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+  <div class="auth-card">
+    <div class="auth-title">Bienvenido de vuelta</div>
+    <form method="POST" action="{{ url_for('login') }}">
+      <div class="form-group">
+        <label class="form-label">Correo electrónico</label>
+        <input type="email" name="correo" class="form-control" placeholder="tu@correo.com" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Contraseña</label>
+        <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-submit">Iniciar Sesión</button>
+    </form>
+  </div>
+  <div class="auth-footer">
+    ¿No tienes cuenta? <a href="{{ url_for('registro') }}">Regístrate gratis</a>
+  </div>
+</div>
+</body>
+</html>

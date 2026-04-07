@@ -1,0 +1,135 @@
+{% extends "base_dashboard.html" %}
+{% block title %}Películas — Admin CineWorld{% endblock %}
+{% block page_title %}Películas{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1>Películas</h1>
+    <p>{{ peliculas|length }} película(s) registradas</p>
+  </div>
+  <button class="btn btn-primary" onclick="openModal('modalCreate')">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+    Nueva película
+  </button>
+</div>
+
+<div class="card">
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Género</th>
+          <th>Duración</th>
+          <th>Clasificación</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for p in peliculas %}
+        <tr>
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              {% if p.imagen_url %}
+              <img src="{{ p.imagen_url }}" style="width:36px;height:50px;object-fit:cover;border-radius:6px;flex-shrink:0;">
+              {% endif %}
+              <span style="font-weight:600;">{{ p.titulo }}</span>
+            </div>
+          </td>
+          <td>{% if p.genero %}<span class="badge badge-blue">{{ p.genero }}</span>{% else %}—{% endif %}</td>
+          <td>{{ p.duracion }} min</td>
+          <td>{{ p.clasificacion or '—' }}</td>
+          <td>
+            {% if p.activa %}
+            <span class="badge badge-green">Activa</span>
+            {% else %}
+            <span class="badge badge-red">Inactiva</span>
+            {% endif %}
+          </td>
+          <td>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-ghost btn-sm" onclick="openEditModal('modalEdit', {
+                id:'{{ p.id }}',titulo:'{{ p.titulo|replace("'","\\'")|replace('"','\\"') }}',
+                genero:'{{ p.genero or '' }}',duracion:'{{ p.duracion or '' }}',
+                clasificacion:'{{ p.clasificacion or '' }}',
+                descripcion:`{{ p.descripcion or '' }}`,imagen_url:'{{ p.imagen_url or '' }}'
+              })">Editar</button>
+              <form method="POST" style="display:inline;">
+                <input type="hidden" name="action" value="toggle">
+                <input type="hidden" name="id" value="{{ p.id }}">
+                <button type="submit" class="btn btn-sm {% if p.activa %}btn-danger{% else %}btn-success{% endif %}">
+                  {% if p.activa %}Desactivar{% else %}Activar{% endif %}
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-secondary);">No hay películas registradas.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal Crear -->
+<div class="modal-overlay" id="modalCreate">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Nueva Película</div>
+      <button class="modal-close" onclick="closeModal('modalCreate')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form method="POST">
+      <input type="hidden" name="action" value="create">
+      <div class="modal-body">
+        <div class="form-group"><label class="form-label">Título *</label><input type="text" name="titulo" class="form-control" required></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Género</label><input type="text" name="genero" class="form-control"></div>
+          <div class="form-group"><label class="form-label">Clasificación</label><input type="text" name="clasificacion" class="form-control" placeholder="G, PG, PG-13, R"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Duración (min)</label><input type="number" name="duracion" class="form-control"></div>
+        <div class="form-group"><label class="form-label">Descripción</label><textarea name="descripcion" class="form-control" rows="3"></textarea></div>
+        <div class="form-group"><label class="form-label">URL Imagen (poster)</label><input type="url" name="imagen_url" class="form-control" placeholder="https://..."></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalCreate')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Crear película</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Editar -->
+<div class="modal-overlay" id="modalEdit">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Editar Película</div>
+      <button class="modal-close" onclick="closeModal('modalEdit')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form method="POST">
+      <input type="hidden" name="action" value="update">
+      <input type="hidden" name="id">
+      <div class="modal-body">
+        <div class="form-group"><label class="form-label">Título *</label><input type="text" name="titulo" class="form-control" required></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Género</label><input type="text" name="genero" class="form-control"></div>
+          <div class="form-group"><label class="form-label">Clasificación</label><input type="text" name="clasificacion" class="form-control"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Duración (min)</label><input type="number" name="duracion" class="form-control"></div>
+        <div class="form-group"><label class="form-label">Descripción</label><textarea name="descripcion" class="form-control" rows="3"></textarea></div>
+        <div class="form-group"><label class="form-label">URL Imagen</label><input type="url" name="imagen_url" class="form-control"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal('modalEdit')">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
